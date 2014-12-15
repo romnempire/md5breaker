@@ -11,10 +11,9 @@ public class Crack {
             candidate[i] = START;
         }
 
-        Char loop = start;
-
-        while (loop != stop) {
-
+        Char[] loopVars = new Char[candidate.length];
+        for (int i = 0; i < loopVars.length; i++) {
+            loopVars[i] = START;
         }
 
     }
