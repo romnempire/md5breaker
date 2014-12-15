@@ -11,9 +11,15 @@ public class Crack {
             candidate[i] = START;
         }
 
+        // create loop variables for an arbitrary number of characters in the password string
         Char[] loopVars = new Char[candidate.length];
         for (int i = 0; i < loopVars.length; i++) {
             loopVars[i] = START;
+        }
+
+        // for each character in the password
+        for (int i = 0; i < candidate.length; i++) {
+
         }
 
     }
