@@ -2,14 +2,15 @@ public class Crack {
     private static char START = 'a';
     private static char STOP = 'z';
     private static int NUM_CHARS = 5;
-
+    char a = 277;
 
     public static void main(String[] args) {
-        byte[] hash = {0x9, 0x8, 0xa, 0x2, 0x9, 0x6, 0x6, 0xd, 0x4, 0xd, 0x8, 0x7, 0xb, 0x3, 0xb, 0x6, 0x2, 0xb, 0x2,
-                0xb, 0x9, 0x2, 0x4, 0x1, 0xe, 0x3, 0xd, 0x5, 0x1, 0x7, 0xf, 0xf};
+        byte[] hash;
 
         if (args.length == 1) {
             hash = toByteArray(args[0]);
+        } else {
+            hash = toByteArray("98a2966d4d87b3b62b2b9241e3d517ff");
         }
         // create and initialize the password string
         char[] candidate = new char[NUM_CHARS];
@@ -24,6 +25,8 @@ public class Crack {
         }
 
         // for each character in the password
+        // this should probably be refactored into something recursive
+        outerLoop:
         do {
             candidate[1] = START;
             do {
@@ -34,7 +37,10 @@ public class Crack {
                         candidate[4] = START;
                         do {
                             candidate[5] = START;
-                            if (matches(toHashString(candidate), hash)) ;
+                            if (matches(toHashString(candidate), hash)) {
+                                System.out.printf("%s\n", candidate);
+                                break outerLoop;
+                            }
                             candidate[5]++;
                         } while (candidate[5] != START);
                         candidate[4]++;
@@ -45,18 +51,22 @@ public class Crack {
             } while (candidate[2] != START);
             candidate[1]++;
         } while (candidate[1] != START);
-
     }
 
     private static boolean matches(byte[] bytes, byte[] hash) {
-        return false;
+        for (int i = 0; i < bytes.length; i++) {
+            if (bytes[i] != hash[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static byte[] toByteArray(String s) {
-        return new byte[0];
+        return javax.xml.bind.DatatypeConverter.parseHexBinary(s);
     }
 
-    public static byte[] toHashString(char[] password) {
+    public static byte[] toHashString(char[] c) {
         return null;
     }
 }
