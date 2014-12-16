@@ -6,7 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import javax.xml.bind.DatatypeConverter;
 
 public class MD5Cracker {
-	int length;
+	int maxLength;
+	String hexmd5hash;
     public static void main (String[] args) {
 
     	MD5Cracker c = new MD5Cracker();
@@ -16,11 +17,11 @@ public class MD5Cracker {
     public MD5Cracker() {
     	//this is 5 because it attempts to implement You Brute from
     	//http://thehackerolympics.com/#rules/
-    	length = 5;
+    	maxLength = 5;
     }
     
     public MD5Cracker(int _maxLength) {
-    	length = _maxLength;
+    	maxLength = _maxLength;
     }
 
     public byte[] hashString(String s) {
@@ -43,26 +44,41 @@ public class MD5Cracker {
     	return DatatypeConverter.printHexBinary(b).toLowerCase();
     }
     
-    public String find(String hexmd5hash) {
+    public String find(String _hexmd5hash) {
+    	hexmd5hash = _hexmd5hash;
     	
-    	for (char c0 = 'a'; c0 != 'z'; c0 = (char)(Character.valueOf(c0).charValue()+1)) {
-        	for (char c1 = 'a'; c1 != 'z'; c1 = (char)(Character.valueOf(c1).charValue()+1)) {
-            	for (char c2 = 'a'; c2 != 'z'; c2 = (char)(Character.valueOf(c2).charValue()+1)) {
-                	for (char c3 = 'a'; c3 != 'z'; c3 = (char)(Character.valueOf(c3).charValue()+1)) {
-                    	for (char c4 = 'a'; c4 != 'z'; c4 = (char)(Character.valueOf(c4).charValue()+1)) {
-                    		char[] chars = {c0,c1,c2,c3,c4};
-                    		String s = String.valueOf(chars);
-                    		String out = byteArrayToString(hashString(s));
-                    		if (out.equals(hexmd5hash)) {
-                    			return s;
-                    		}
-                    	}
-                	}
-            	}
-        	}
+    	for(int i = 1; i <= maxLength; i++) {
+    		String s = testStringsOfLength(i, new char[0]);
+    		if (!s.equals("")) {
+    			return s;
+    		}
     	}
-	
-    	return "throw an error, batman smells";
+    	
+    	return "halp";
     }
     
+    private String testStringsOfLength(int len, char[] chars) {
+		if(len == 0) {
+    		String s = String.valueOf(chars);
+    		String out = byteArrayToString(hashString(s));
+    		if (out.equals(hexmd5hash)) {
+    			return s;
+    		} else {
+    			return "";
+    		}
+		} else {
+			String s = "";
+			for (char c = 'a'; Character.isLetter(c); c = (char)(Character.valueOf(c).charValue()+1)) {
+				char[] c2 = new char[chars.length+1];
+				System.arraycopy(chars, 0, c2, 0, chars.length);
+				c2[c2.length-1] = c;
+				String s2 = testStringsOfLength(len-1, c2);
+				if (!s2.equals("")) {
+					s = s2;
+					break;
+				}
+			}
+			return s;
+		}
+    } 
 }
